@@ -35,6 +35,16 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.ajalt</groupId>
+            <artifactId>clikt</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.mcgill.sable</groupId>
+            <artifactId>soot</artifactId>
+            <version>4.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -62,6 +72,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <jvmTarget>11</jvmTarget>
+                </configuration>
             </plugin>
         </plugins>
     </build>
