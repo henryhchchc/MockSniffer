@@ -13,7 +13,7 @@ class CodeRepository(private val directory: File) {
 
     private fun scanForProjects(): List<Project> =
         this.directory.walkTopDown().filter { it.isDirectory && it.containsMavenProject() }
-            .map { MavenProject(this, it) }
+            .map { MavenProject(this, it.normalize().absoluteFile) }
             .toList()
 
     private val sourceDirectories by lazy { projects.map { it.sourceDirectory }.toList() }
