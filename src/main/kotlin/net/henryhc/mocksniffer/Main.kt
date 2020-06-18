@@ -5,6 +5,7 @@ import net.henryhc.mocksniffer.dependencyresolving.ExtractTuples
 import net.henryhc.mocksniffer.dependencyresolving.ExtractTuplesSingleProject
 import net.henryhc.mocksniffer.featureextraction.ExtractCodeLevelFeaturesCommand
 import net.henryhc.mocksniffer.featureextraction.ProjectExtractorCommand
+import net.henryhc.mocksniffer.prediction.PredictionCommand
 
 fun main(args: Array<String>) {
     MainCommand()
@@ -12,7 +13,8 @@ fun main(args: Array<String>) {
             ExtractTuples(),
             ExtractTuplesSingleProject(),
             ExtractCodeLevelFeaturesCommand(),
-            ProjectExtractorCommand()
+            ProjectExtractorCommand(),
+            PredictionCommand()
         )
         .main(args)
 }
