@@ -32,7 +32,7 @@ java -jar mocksniffer.jar extract-features \
     --dataset ./dataset.csv \ # The dataset extracted in previous step
     -rt /usr/lib/jvm/java-8-openjdk-amd64 \ # The root folder of JDK 8
     -o ./output.csv \ # Output file
-    -pp # Number of the projects to extract in parallel (10 by default)
+    -pp 20 # Number of the projects to extract in parallel (10 by default)
 ```
 
 ### Step 3: Run the prediction process
@@ -41,5 +41,5 @@ java -jar mocksniffer.jar batch-predit \
     --repo ./repos/hadoop \ # The root directory od the target projects
     --input ./dataset.csv \ # The dataset extracted in step 1
     --model ./model.pmml \ # The model file
-    -o ./prediction.csv \ # Output file
+    -o ./prediction.csv # Output file
 ```
