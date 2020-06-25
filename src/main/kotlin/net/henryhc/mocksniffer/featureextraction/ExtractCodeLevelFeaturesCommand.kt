@@ -16,7 +16,7 @@ import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors
 
-class ExtractCodeLevelFeaturesCommand : CliktCommand(name = "code-level-features") {
+class ExtractCodeLevelFeaturesCommand : CliktCommand(name = "extract-features") {
 
     private val repoDir by option("-r", "--repo")
         .file(exists = true, folderOkay = true, fileOkay = false)
