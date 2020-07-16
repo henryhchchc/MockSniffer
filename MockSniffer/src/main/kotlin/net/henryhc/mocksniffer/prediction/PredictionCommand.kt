@@ -48,7 +48,7 @@ class PredictionCommand : CliktCommand(name = "batch-predict") {
             val key = evalValues.keys.single { it.value == "IS_MOCK" }
             val predResult = evalValues[key] as ProbabilityDistribution<Double>
             PredictionResult(rec["CUT"], rec["DEP"], rec["ORD"].toInt(), predResult).also { semaphore.release() }
-        }.collect(Collectors.toList())
+        }.collect(Collectors.toList()).also { it.sortByDescending { it.probMock } }
         CSVFormat.DEFAULT
             .withHeader("CUT", "DEP", "ORD", "PROB_MOCK", "PROB_NOT_MOCK", "SHOULD_MOCK")
             .print(output.bufferedWriter())
