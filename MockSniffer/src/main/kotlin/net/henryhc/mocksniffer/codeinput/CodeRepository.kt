@@ -16,9 +16,6 @@ class CodeRepository(val directory: File) {
             .map { MavenProject(this, it.normalize().absoluteFile) }
             .toList()
 
-    private val sourceDirectories by lazy { projects.map { it.sourceDirectory }.toList() }
-    private val testDirectories by lazy { projects.map { it.testDirectory }.toList() }
-
     private val targetDirectories by lazy { projects.map { it.targetClassDir }.toList() }
     private val testTargetDirectories by lazy { projects.map { it.testTargetClassDir }.toList() }
 

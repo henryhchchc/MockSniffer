@@ -134,11 +134,10 @@ class ExtractTestLogDatasetCommand : CliktCommand(name = "test-log-dataset") {
                 .trimWord("test")
                 .trimWord("tests")
                 .trimWord("testcase")
-        when {
-            sourceRepo.classTypeResolver[cut] == ClassType.PRODUCTION_CODE -> return cut
-            sourceRepo.classTypeResolver["${cut}Impl"] == ClassType.PRODUCTION_CODE -> return "${cut}Impl"
-            sourceRepo.classTypeResolver[cut.trimWord("abstract", trimStart = true, trimEnd = false)] == ClassType.PRODUCTION_CODE ->
-                return cut.trimWord("abstract")
+        when (ClassType.PRODUCTION_CODE) {
+            sourceRepo.classTypeResolver[cut] -> return cut
+            sourceRepo.classTypeResolver["${cut}Impl"] -> return "${cut}Impl"
+            sourceRepo.classTypeResolver[cut.trimWord("abstract", trimStart = true, trimEnd = false)] -> return cut.trimWord("abstract")
         }
         val pkgName = cut.split(".").dropLast(1).joinToString(".")
         val simpleName = cut.split(".").last()

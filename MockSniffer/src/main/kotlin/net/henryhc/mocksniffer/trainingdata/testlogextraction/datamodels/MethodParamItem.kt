@@ -8,7 +8,7 @@ class MethodParamItem(
     val typeName: String,
     val paramIdx: Int,
     val methodSignature: String,
-    val stackTrace: List<StackFrame>
+    private val stackTrace: List<StackFrame>
 ) {
     val testFrame = stackTrace.lastOrNull { it.classType == "test" }
     val isInTest: Boolean = stackTrace.lastOrNull()?.classType == "test"

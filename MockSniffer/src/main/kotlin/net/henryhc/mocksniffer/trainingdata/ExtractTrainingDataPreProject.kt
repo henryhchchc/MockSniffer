@@ -76,7 +76,7 @@ class ExtractTrainingDataPreProject : PreProjectFeatureExtractor("extract-traini
 
         val method = Scene.v().grabMethod(entry.methodSignature) ?: return null
 
-        val paramType = method.parameterTypes.get(entry.paramIdx)
+        val paramType = method.parameterTypes[entry.paramIdx]
         if (paramType !is RefType)
             return null
         val paramClass = paramType.sootClass

@@ -12,9 +12,6 @@ abstract class Project(val codeRepository: CodeRepository, rootDirectory: File) 
     val rootDirectory: File = rootDirectory.absoluteFile
     abstract val classPath: List<String>
 
-    val sourceFiles by lazy { scanSourceFiles().toList() }
-    val testFiles by lazy { scanTestFiles().toList() }
-
     val targetFiles by lazy { targetClassDir.walkTopDown().filter { it.extension == "class" }.toList() }
     val testTargetFiles by lazy { testTargetClassDir.walkTopDown().filter { it.extension == "class" }.toList() }
 

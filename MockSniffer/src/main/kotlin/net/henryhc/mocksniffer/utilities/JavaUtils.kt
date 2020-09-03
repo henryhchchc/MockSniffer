@@ -7,6 +7,6 @@ val javaExecutable = System.getProperty("java.home").let {
     Path.of(it, "bin", "java")
 }.toAbsolutePath().normalize().toFile()
 
-val jarName = "mocksniffer.jar"
+const val jarName = "mocksniffer.jar"
 
 fun getRuntimeJars(runtimeFolder: File) = File(runtimeFolder, "jre/lib").walkTopDown().filter { it.extension == "jar" }

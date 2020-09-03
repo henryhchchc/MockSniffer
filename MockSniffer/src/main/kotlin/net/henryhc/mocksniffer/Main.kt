@@ -9,6 +9,7 @@ import net.henryhc.mocksniffer.prediction.PredictionCommand
 import net.henryhc.mocksniffer.testinstrument.AddLoggerScriptCommand
 import net.henryhc.mocksniffer.testinstrument.PreProjectInstrumentCommand
 import net.henryhc.mocksniffer.testinstrument.TestInstrumentCommand
+import net.henryhc.mocksniffer.trainingdata.BatchTrainingDataExtractCommand
 import net.henryhc.mocksniffer.trainingdata.ExtractTrainingData
 import net.henryhc.mocksniffer.trainingdata.ExtractTrainingDataPreProject
 import net.henryhc.mocksniffer.trainingdata.testlogextraction.ExtractTestLogDatasetCommand
@@ -33,6 +34,7 @@ fun main(args: Array<String>) {
             MethodParamsExtraction(),
             ExtractTrainingData(),
             ExtractTrainingDataPreProject(),
+            BatchTrainingDataExtractCommand(),
 
             // Test instrument
             TestInstrumentCommand(),

@@ -136,7 +136,7 @@ abstract class PreProjectFeatureExtractor(name: String) : SootEnvCommand(name = 
             depClassRet = if (paramClass in depSuperTypes)
                 paramClass
             else {
-                depSuperTypes.firstOrNull() { sourceRepository.classTypeResolver[it.name] != ClassType.TEST_SCRIPT }
+                depSuperTypes.firstOrNull { sourceRepository.classTypeResolver[it.name] != ClassType.TEST_SCRIPT }
                     ?: depClass.also { labelRet = "real" }
             }
         }
