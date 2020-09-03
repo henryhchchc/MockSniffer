@@ -1,4 +1,4 @@
-package net.henryhc.mocksniffer.featureextraction
+package net.henryhc.mocksniffer.featureengineering
 
 import net.henryhc.mocksniffer.utilities.includeSuperClasses
 import soot.SootClass
@@ -14,7 +14,7 @@ class BodyFeatureAnalysis(
         graph: UnitGraph,
         dependency: SootClass,
         private val currentClass: SootClass
-) : ForwardFlowAnalysis<Unit, MutableSet<Unit>>(graph) {
+) : ForwardFlowAnalysis<soot.Unit, MutableSet<Unit>>(graph) {
 
     override fun newInitialFlow() = mutableSetOf<Unit>()
     override fun merge(leftFlow: MutableSet<Unit>, rightFlow: MutableSet<Unit>, outFlow: MutableSet<Unit>) {

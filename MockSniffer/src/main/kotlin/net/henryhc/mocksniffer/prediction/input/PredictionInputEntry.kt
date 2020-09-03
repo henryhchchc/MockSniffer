@@ -1,9 +1,9 @@
-package net.henryhc.mocksniffer.featureextraction
+package net.henryhc.mocksniffer.prediction.input
 
 import org.apache.commons.csv.CSVPrinter
 import org.apache.commons.csv.CSVRecord
 
-data class CodeLevelFeatureEntry(
+data class PredictionInputEntry(
         val classUnderTest: String,
         val dependency: String,
         val dependencyOrder: Int,
@@ -14,8 +14,6 @@ data class CodeLevelFeatureEntry(
         val depDeps: Int,
         val depTransitiveDeps: Int,
         val depFields: Int,
-        val depInUnstableAPIList: Boolean,
-        val depIsFinal: Boolean,
         val depImplUnstableInterfaces: Boolean,
         val depUnstableAPIs: Int,
         val depInvSynchronizedMethods: Int,
@@ -28,32 +26,30 @@ data class CodeLevelFeatureEntry(
 )
 
 
-val codeLevelFeatureEntryHeader = arrayOf(
+val predictionInputEntryHeaders = arrayOf(
         "CUT",
-        "DEP",
-        "ORD",
+        "D",
+        "DORD",
         // Features
-        "DEP_ABS",
-        "DEP_INT",
-        "DEP_JDK",
-        "DEP_ICB",
-        "DEP_NDEP",
-        "DEP_NTRANDEP",
-        "DEP_NF",
-        "DEP_IN_UAPI",
-        "DEP_FINAL",
-        "DEP_UAPI",
-        "DEP_UAPI_TRAN",
-        "DEP_UINT",
-        "DEP_INV_SYNC",
-        "CALL_SITE_ON_DEP",
-        "ARG_FPR",
-        "RET_BFA",
-        "EXP_CAT",
-        "CTRL_DOM"
+        "ABS",
+        "INT",
+        "JDK",
+        "ICB",
+        "DEP",
+        "TDEP",
+        "FIELD",
+        "UAPI",
+        "TUAPI",
+        "UINT",
+        "SYNC",
+        "CALLSITES",
+        "AFPR",
+        "RBFA",
+        "EXPCAT",
+        "CONDCALL"
 )
 
-fun CodeLevelFeatureEntry.printCsvRecord(printer: CSVPrinter) =
+fun PredictionInputEntry.printCsvRecord(printer: CSVPrinter) =
         printer.printRecord(
                 this.classUnderTest,
                 this.dependency,
@@ -66,8 +62,6 @@ fun CodeLevelFeatureEntry.printCsvRecord(printer: CSVPrinter) =
                 this.depDeps,
                 this.depTransitiveDeps,
                 this.depFields,
-                this.depInUnstableAPIList,
-                this.depIsFinal,
                 this.depUnstableAPIs,
                 this.depUnstableAPIsTransitive,
                 this.depImplUnstableInterfaces,
@@ -79,26 +73,24 @@ fun CodeLevelFeatureEntry.printCsvRecord(printer: CSVPrinter) =
                 this.controlDominance
         )
 
-fun CSVRecord.parseCodeLevelFeatureEntry() = CodeLevelFeatureEntry(
+fun CSVRecord.parsePredictionInputEntry() = PredictionInputEntry(
         this["CUT"],
-        this["DEP"],
-        this["ORD"].toInt(),
-        this["DEP_ABS"]!!.toBoolean(),
-        this["DEP_INT"]!!.toBoolean(),
-        this["DEP_JDK"]!!.toBoolean(),
-        this["DEP_ICB"]!!.toBoolean(),
-        this["DEP_NDEP"].toInt(),
-        this["DEP_NTRANDEP"].toInt(),
-        this["DEP_NF"].toInt(),
-        this["DEP_IN_UAPI"]!!.toBoolean(),
-        this["DEP_FINAL"]!!.toBoolean(),
-        this["DEP_UINT"]!!.toBoolean(),
-        this["DEP_UAPI"].toInt(),
-        this["DEP_INV_SYNC"].toInt(),
-        this["CALL_SITE_ON_DEP"].toInt(),
-        this["ARG_FPR"].toInt(),
-        this["RET_BFA"].toInt(),
-        this["EXP_CAT"].toInt(),
-        this["CTRL_DOM"].toInt(),
-        this["DEP_UAPI_TRAN"].toInt()
+        this["D"],
+        this["DORD"].toInt(),
+        this["ABS"]!!.toBoolean(),
+        this["INT"]!!.toBoolean(),
+        this["JDK"]!!.toBoolean(),
+        this["ICB"]!!.toBoolean(),
+        this["DEP"].toInt(),
+        this["TDEP"].toInt(),
+        this["FIELD"].toInt(),
+        this["UINT"]!!.toBoolean(),
+        this["UAPI"].toInt(),
+        this["SYNC"].toInt(),
+        this["CALLSITES"].toInt(),
+        this["AFPR"].toInt(),
+        this["RBFA"].toInt(),
+        this["EXPCAT"].toInt(),
+        this["CONDCALL"].toInt(),
+        this["TUAPI"].toInt()
 )

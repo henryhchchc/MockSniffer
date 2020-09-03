@@ -1,4 +1,4 @@
-package net.henryhc.mocksniffer.dependencyresolving
+package net.henryhc.mocksniffer.prediction.dependencyresolving
 
 import soot.SootClass
 

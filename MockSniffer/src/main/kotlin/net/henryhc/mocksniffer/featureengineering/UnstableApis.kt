@@ -1,4 +1,4 @@
-package net.henryhc.academic.mockingproject.codelevelfeatures
+package net.henryhc.mocksniffer.featureengineering
 
 val unstableInterfaces = setOf(
         "java.lang.AutoClosable",

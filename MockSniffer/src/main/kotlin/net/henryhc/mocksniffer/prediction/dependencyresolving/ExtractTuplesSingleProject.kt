@@ -1,4 +1,4 @@
-package net.henryhc.mocksniffer.dependencyresolving
+package net.henryhc.mocksniffer.prediction.dependencyresolving
 
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
@@ -7,13 +7,9 @@ import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import net.henryhc.mocksniffer.SootEnvCommand
 import net.henryhc.mocksniffer.codeinput.CodeRepository
-import net.henryhc.mocksniffer.codeinput.Project
 import net.henryhc.mocksniffer.utilities.configureSoot
-import net.henryhc.mocksniffer.utilities.getRuntimeJars
 import soot.PackManager
 import soot.Transform
-import soot.options.Options
-import java.io.File
 
 class ExtractTuplesSingleProject : SootEnvCommand(name = "extract-dataset-project") {
 

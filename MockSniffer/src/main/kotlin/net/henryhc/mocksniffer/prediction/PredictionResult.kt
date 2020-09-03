@@ -1,6 +1,5 @@
 package net.henryhc.mocksniffer.prediction
 
-import fj.test.Bool
 import org.jpmml.evaluator.ProbabilityDistribution
 
 

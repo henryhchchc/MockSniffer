@@ -36,7 +36,7 @@ private val setupAnnotations = setOf(
     "Lorg/junit/jupiter/api/AfterEach;"
 )
 
-fun SootMethod.isSetupMethod(): Boolean = this.getTag("VisibilityAnnotationTag")
+fun SootMethod.isTestSetupMethod(): Boolean = this.getTag("VisibilityAnnotationTag")
     .let { it as? VisibilityAnnotationTag }?.annotations?.any { it.type in setupAnnotations } ?: false
 
 fun SootMethod.isTestMethod(): Boolean = this.getTag("VisibilityAnnotationTag")
@@ -117,4 +117,23 @@ fun configureSoot(project: Project, java8RuntimePath: File) {
         if (System.getProperty("java.ext.dirs") == null)
             System.setProperty("java.ext.dirs", "")
     }
+}
+
+fun SootMethod.expandCallGraph(
+    callGraph: CallGraph = Scene.v().callGraph,
+    filter: (SootMethod) -> Boolean = { true }
+): Set<SootMethod> {
+    val result = mutableSetOf<SootMethod>()
+    val queue = ArrayDeque<SootMethod>().apply { add(this@expandCallGraph) }
+    val visited = mutableSetOf<SootMethod>()
+    while (queue.isNotEmpty()) {
+        val method = queue.pop()
+        visited.add(method)
+        result.add(method)
+        val targets = callGraph.edgesOutOf(method).asSequence()
+                .map { it.tgt.method() }.filter(filter).filterNot { it in visited || it in queue }
+                .toSet()
+        queue.addAll(targets)
+    }
+    return result
 }

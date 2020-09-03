@@ -1,4 +1,4 @@
-package net.henryhc.mocksniffer.featureextraction
+package net.henryhc.mocksniffer.featureengineering
 
 import net.henryhc.mocksniffer.utilities.includeSuperClasses
 import soot.Body

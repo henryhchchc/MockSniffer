@@ -1,4 +1,4 @@
-package net.henryhc.mocksniffer.featureextraction
+package net.henryhc.mocksniffer.prediction.input
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
@@ -7,7 +7,7 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import net.henryhc.mocksniffer.codeinput.CodeRepository
-import net.henryhc.mocksniffer.dependencyresolving.DepEntry
+import net.henryhc.mocksniffer.prediction.dependencyresolving.DepEntry
 import net.henryhc.mocksniffer.utilities.jarName
 import net.henryhc.mocksniffer.utilities.javaExecutable
 import org.apache.commons.csv.CSVFormat
@@ -16,7 +16,7 @@ import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors
 
-class ExtractCodeLevelFeaturesCommand : CliktCommand(name = "extract-features") {
+class PredictionInputExtractionCommand : CliktCommand(name = "extract-prediction-input") {
 
     private val repoDir by option("-r", "--repo")
         .file(exists = true, folderOkay = true, fileOkay = false)
@@ -58,7 +58,7 @@ class ExtractCodeLevelFeaturesCommand : CliktCommand(name = "extract-features") 
             semaphore.acquire()
             ProcessBuilder(
                 javaExecutable.absolutePath, "-jar", jarName,
-                "code-level-features-project",
+                "extract-prediction-input-pre-project",
                 "-p", project.rootDirectory.absolutePath,
                 "-rt", rtPath.absolutePath,
                 "-i", inputFile.absolutePath,
@@ -76,20 +76,17 @@ class ExtractCodeLevelFeaturesCommand : CliktCommand(name = "extract-features") 
         println("Merging CSVs from projects")
         outputCsv.delete()
         outputCsv.bufferedWriter().use { outputWriter ->
-            val printer = CSVFormat.DEFAULT.withHeader(*codeLevelFeatureEntryHeader).print(outputWriter)
+            val printer = CSVFormat.DEFAULT.withHeader(*predictionInputEntryHeaders).print(outputWriter)
             partialFiles.filter { it.exists() }.flatMap {
                 it.bufferedReader().use { reader ->
-                    CSVFormat.DEFAULT.withHeader(*codeLevelFeatureEntryHeader)
+                    CSVFormat.DEFAULT.withHeader(*predictionInputEntryHeaders)
                         .parse(reader)
                         .drop(1)
-                        .map { it.parseCodeLevelFeatureEntry() }
+                        .map { it.parsePredictionInputEntry() }
                 }
             }.forEach { it.printCsvRecord(printer) }
         }
         tempDir.deleteRecursively()
     }
 }
-
-private val methodSigRegex = "<(\\S+):\\s+(\\S+)\\s+(\\S+)\\(((\\S+(,\\s*\\S+)*)?)\\)>"
-    .toRegex()
 

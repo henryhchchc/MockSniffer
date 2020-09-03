@@ -3,7 +3,7 @@ package net.henryhc.mocksniffer.codeinput
 import net.henryhc.mocksniffer.utilities.ConcurrentCachingResolver
 import java.io.File
 
-class CodeRepository(private val directory: File) {
+class CodeRepository(val directory: File) {
 
     init {
         require(directory.isDirectory)
