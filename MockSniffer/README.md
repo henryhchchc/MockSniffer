@@ -1,4 +1,4 @@
-# MockSniffer: Characterizing and Recommending Mocking Decisions for Unit Tests
+# MockSniffer: 
 
 ## Environment Setup
 The following JDKs are required:

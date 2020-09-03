@@ -1,0 +1,14 @@
+# MockSniffer: Characterizing and Recommending Mocking Decisions for Unit Tests
+
+This repository holds the dataset and code for the following work:
+
+Hengcheng Zhu, Lili Wei, Ming Wen, Yepang Liu, Shing-Chi Cheung, Qin Sheng, and Cui Zhou. 2020. **MockSniffer: Characterizing and Recommending Mocking Decisions for Unit Tests.** In *35th IEEE/ACM International Conference on Automated Software Engineering (ASE ’20)*, September 21–25, 2020, Virtual Event, Australia. ACM, New York, NY, USA, 12 pages. [https://doi.org/10.1145/3324884.3416539](https://doi.org/10.1145/3324884.3416539)
+
+## Overview
+
+- For data analysis scripts please checkout [ASE20_data](ASE20_data/).
+- For code analysis, instrumentation, and feature extraction, please checkout [MockSniffer](MockSniffer/).
+
+Pre-extracted dataset and pre-trained model are available in [Release](release/).
+
+More detailed replication instructions will be added soon.
