@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+authors:
+- family-names: "Zhu"
+  given-names: "Hengcheng"
+  orcid: "https://orcid.org/0000-0002-3082-5957"
+- family-names: "Wei"
+  given-names: "Lili"
+  orcid: "https://orcid.org/0000-0002-2428-4111"
+- family-names: "Wen"
+  given-names: "Ming"
+  orcid: "https://orcid.org/0000-0001-5588-9618"
+- family-names: "Liu"
+  given-names: "Yepang"
+  orcid: "https://orcid.org/0000-0001-8147-8126"
+- family-names: "Cheung"
+  given-names: "Shing-Chi"
+  orcid: "https://orcid.org/0000-0002-3508-7172"
+- family-names: "Sheng"
+  given-names: "Qin"
+- family-names: "Zhou"
+  given-names: "Cui"
+title: "MockSniffer: Characterizing and Recommending Mocking Decisions for Unit Tests"
+doi: 10.1145/3324884.3416539
+url: "https://doi.org/10.1145/3324884.3416539"
+year: 2020
+type: conference-paper
+start: 436
+end: 447
+booktitle: "35th IEEE/ACM International Conference on Automated Software Engineering, ASE 2020, Melbourne, Australia, September 21-25, 2020"
