@@ -17,6 +17,6 @@ fun File.getMavenProject(codeRepository: CodeRepository) = if (this.containsMave
 else null
 
 fun File.containsMavenProject() = this.isDirectory && this.listFiles { f -> f.name == "pom.xml" }?.isNotEmpty() == true
-        && findSrcDir(this) != null && findTestSrcDir(
+        && findBinDir(this) != null && findTestBinDir(
     this
 ) != null

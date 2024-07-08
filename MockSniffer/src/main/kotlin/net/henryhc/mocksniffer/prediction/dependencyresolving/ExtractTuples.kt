@@ -28,7 +28,7 @@ class ExtractTuples : SootEnvCommand(name = "extract-dataset") {
         val tempDir = Files.createTempDirectory("mocksniffer_").toFile()
         val semaphore = Semaphore(parallelProjects)
         val projectsPartialFiles =
-            repo.projects.associateWith { Path.of(tempDir.absolutePath, "partial_${Random(2333)}.csv").toFile() }
+            repo.projects.associateWith { Path.of(tempDir.absolutePath, "partial_${Random(2333).nextLong()}.csv").toFile() }
         println("Starting and waiting sub processes")
         repo.projects.parallelStream().forEach {
             semaphore.acquire()

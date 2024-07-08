@@ -48,6 +48,14 @@ private val testSrcDirs = listOf(
     listOf("src", "test").joinToString(File.separator)
 )
 
+private val binDirs = listOf(
+    listOf("target", "classes").joinToString(File.separator),
+)
+
+private val testBinDirs = listOf(
+    listOf("target", "test-classes").joinToString(File.separator),
+)
+
 private fun findCodeDir(rootDir: File, candidates: List<String>) = candidates
     .map { File(rootDir, it).normalize() }
     .firstOrNull { it.isDirectory }
@@ -59,4 +67,13 @@ fun findSrcDir(rootDirectory: File) = findCodeDir(
 fun findTestSrcDir(rootDirectory: File) = findCodeDir(
     rootDirectory,
     testSrcDirs
+)
+
+fun findBinDir(rootDirectory: File) = findCodeDir(
+    rootDirectory,
+    binDirs
+)
+fun findTestBinDir(rootDirectory: File) = findCodeDir(
+    rootDirectory,
+    testBinDirs
 )
