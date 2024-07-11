@@ -2,19 +2,21 @@ package net.henryhc.mocksniffer.trainingdata.testlogextraction.datamodels
 
 import net.henryhc.mocksniffer.codeinput.CodeRepository
 
-
 class MethodParamItem(
     val objType: String,
     val typeName: String,
     val paramIdx: Int,
     val methodSignature: String,
-    private val stackTrace: List<StackFrame>
+    private val stackTrace: List<StackFrame>,
 ) {
     val testFrame = stackTrace.lastOrNull { it.classType == "test" }
     val isInTest: Boolean = stackTrace.lastOrNull()?.classType == "test"
 }
 
-fun parseMethodParamItem(lines: List<String>, sourceRepo: CodeRepository) = try {
+fun parseMethodParamItem(
+    lines: List<String>,
+    sourceRepo: CodeRepository,
+) = try {
     MethodParamItem(
         lines[0],
         lines[1],
@@ -24,7 +26,7 @@ fun parseMethodParamItem(lines: List<String>, sourceRepo: CodeRepository) = try 
             StackFrame.parseLine(it)?.apply {
                 classType = sourceRepo.classTypeResolver[className.split("$").first(String::isNotBlank)].toString()
             }
-        }
+        },
     )
 } catch (ex: Exception) {
     println(lines[1])

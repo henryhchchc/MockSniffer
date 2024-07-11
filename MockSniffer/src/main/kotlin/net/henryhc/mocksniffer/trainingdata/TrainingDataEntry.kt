@@ -4,32 +4,32 @@ import org.apache.commons.csv.CSVPrinter
 import org.apache.commons.csv.CSVRecord
 
 data class TrainingDataEntry(
-        val testClass: String,
-        val testMethod: String,
-        val classUnderTest: String,
-        val dependency: String,
-        val label: String,
-        val depIsAbstract: Boolean,
-        val depIsInterface: Boolean,
-        val depIsJDKClass: Boolean,
-        val depIsInCodeBase: Boolean,
-        val depDeps: Int,
-        val depTransitiveDeps: Int,
-        val depFields: Int,
-        val depImplUnstableInterfaces: Boolean,
-        val depUnstableAPIs: Int,
-        val depInvSynchronizedMethods: Int,
-        val callSitesOnDependency: Int,
-        val argsFromFPR: Int,
-        val returnValueBFA: Int,
-        val exceptionsCaught: Int,
-        val controlDominance: Int,
-        val methodSignature: String,
-        val depUnstableAPIsTransitive: Int
+    val testClass: String,
+    val testMethod: String,
+    val classUnderTest: String,
+    val dependency: String,
+    val label: String,
+    val depIsAbstract: Boolean,
+    val depIsInterface: Boolean,
+    val depIsJDKClass: Boolean,
+    val depIsInCodeBase: Boolean,
+    val depDeps: Int,
+    val depTransitiveDeps: Int,
+    val depFields: Int,
+    val depImplUnstableInterfaces: Boolean,
+    val depUnstableAPIs: Int,
+    val depInvSynchronizedMethods: Int,
+    val callSitesOnDependency: Int,
+    val argsFromFPR: Int,
+    val returnValueBFA: Int,
+    val exceptionsCaught: Int,
+    val controlDominance: Int,
+    val methodSignature: String,
+    val depUnstableAPIsTransitive: Int,
 )
 
-
-val trainingDataEntryCsvHeader = arrayOf(
+val trainingDataEntryCsvHeader =
+    arrayOf(
         "TC",
         "TM",
         "CUT",
@@ -52,37 +52,38 @@ val trainingDataEntryCsvHeader = arrayOf(
         "RBFA",
         "EXPCAT",
         "CONDCALL",
-        "METHOD"
-)
+        "METHOD",
+    )
 
 fun TrainingDataEntry.printCsvRecord(printer: CSVPrinter) =
-        printer.printRecord(
-                this.testClass,
-                this.testMethod,
-                this.classUnderTest,
-                this.dependency,
-                this.label,
-                // Features
-                this.depIsAbstract,
-                this.depIsInterface,
-                this.depIsJDKClass,
-                this.depIsInCodeBase,
-                this.depDeps,
-                this.depTransitiveDeps,
-                this.depFields,
-                this.depUnstableAPIs,
-                this.depUnstableAPIsTransitive,
-                this.depImplUnstableInterfaces,
-                this.depInvSynchronizedMethods,
-                this.callSitesOnDependency,
-                this.argsFromFPR,
-                this.returnValueBFA,
-                this.exceptionsCaught,
-                this.controlDominance,
-                this.methodSignature
-        )
+    printer.printRecord(
+        this.testClass,
+        this.testMethod,
+        this.classUnderTest,
+        this.dependency,
+        this.label,
+        // Features
+        this.depIsAbstract,
+        this.depIsInterface,
+        this.depIsJDKClass,
+        this.depIsInCodeBase,
+        this.depDeps,
+        this.depTransitiveDeps,
+        this.depFields,
+        this.depUnstableAPIs,
+        this.depUnstableAPIsTransitive,
+        this.depImplUnstableInterfaces,
+        this.depInvSynchronizedMethods,
+        this.callSitesOnDependency,
+        this.argsFromFPR,
+        this.returnValueBFA,
+        this.exceptionsCaught,
+        this.controlDominance,
+        this.methodSignature,
+    )
 
-fun CSVRecord.parseTrainingDataEntry() = TrainingDataEntry(
+fun CSVRecord.parseTrainingDataEntry() =
+    TrainingDataEntry(
         this["TC"],
         this["TM"],
         this["CUT"],
@@ -104,5 +105,5 @@ fun CSVRecord.parseTrainingDataEntry() = TrainingDataEntry(
         this["EXPCAT"].toInt(),
         this["CONDCALL"].toInt(),
         this["METHOD"],
-        this["TUAPI"].toInt()
-)
+        this["TUAPI"].toInt(),
+    )

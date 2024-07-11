@@ -16,7 +16,6 @@ import java.util.concurrent.Semaphore
 import kotlin.random.Random
 
 class ExtractTuples : SootEnvCommand(name = "extract-dataset") {
-
     private val repoDir by option("--repo", "-r").file(folderOkay = true, exists = true).required()
 
     private val parallelProjects by option("-pp").int().default(10)
@@ -34,30 +33,33 @@ class ExtractTuples : SootEnvCommand(name = "extract-dataset") {
             semaphore.acquire()
             ProcessBuilder(
                 javaExecutable.absolutePath,
-                "-jar", jarName,
+                "-jar",
+                jarName,
                 "extract-dataset-project",
-                "-rt", java8RuntimePath.absolutePath,
-                "--project", it.rootDirectory.absolutePath,
-                "--output", projectsPartialFiles.getValue(it).absolutePath
-            )
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                "-rt",
+                java8RuntimePath.absolutePath,
+                "--project",
+                it.rootDirectory.absolutePath,
+                "--output",
+                projectsPartialFiles.getValue(it).absolutePath,
+            ).redirectOutput(ProcessBuilder.Redirect.INHERIT)
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start()
                 .waitFor()
             semaphore.release()
         }
         println("Merging results form sub-processes")
-        val result = projectsPartialFiles.values.flatMap { f ->
-            CSVFormat.DEFAULT
-                .withFirstRecordAsHeader()
-                .parse(f.bufferedReader())
-                .map { DepEntry(it["CUT"], it["DEP"], it["ORD"].toInt()) }
-        }
+        val result =
+            projectsPartialFiles.values.flatMap { f ->
+                CSVFormat.DEFAULT
+                    .withFirstRecordAsHeader()
+                    .parse(f.bufferedReader())
+                    .map { DepEntry(it["CUT"], it["DEP"], it["ORD"].toInt()) }
+            }
         tempDir.deleteRecursively()
         CSVFormat.DEFAULT
             .withHeader("CUT", "DEP", "ORD")
             .print(outputFile.bufferedWriter())
             .use { p -> result.forEach { p.printRecord(it.cut, it.dep, it.order) } }
     }
-
 }

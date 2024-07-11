@@ -15,10 +15,14 @@ class SootLauncher(
     val project: Project,
     tempDir: String,
     private val rtJarPath: String,
-    private val targetType: String
+    private val targetType: String,
 ) {
-
-    private val tempDir = Path.of(tempDir).normalize().toAbsolutePath().toFile()
+    private val tempDir =
+        Path
+            .of(tempDir)
+            .normalize()
+            .toAbsolutePath()
+            .toFile()
 
     fun start() {
         println("Instrumenting project ${project.rootDirectory}")
@@ -38,9 +42,16 @@ class SootLauncher(
         }
     }
 
-
-    private fun setupSoot(project: Project, type: String) {
-        val outputDir = Path.of(tempDir.absolutePath, type).toAbsolutePath().normalize().toFile()
+    private fun setupSoot(
+        project: Project,
+        type: String,
+    ) {
+        val outputDir =
+            Path
+                .of(tempDir.absolutePath, type)
+                .toAbsolutePath()
+                .normalize()
+                .toFile()
         with(Options.v()) {
             set_output_dir(outputDir.absolutePath)
             set_soot_classpath(project.getSootClassPath(rtJarPath))
@@ -62,10 +73,12 @@ class SootLauncher(
         Scene.v().addBasicClass("tool.MockitoLogger", SootClass.SIGNATURES)
         Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)
 
-        if (System.getProperty("sun.boot.class.path") == null)
+        if (System.getProperty("sun.boot.class.path") == null) {
             System.setProperty("sun.boot.class.path", "")
-        if (System.getProperty("java.ext.dirs") == null)
+        }
+        if (System.getProperty("java.ext.dirs") == null) {
             System.setProperty("java.ext.dirs", "")
+        }
     }
 
     private fun instrument(dir: File) {
@@ -81,30 +94,33 @@ class SootLauncher(
         }
     }
 
-    private fun File.addClasses() = this.walkTopDown().filter { it.extension == "class" }.forEach {
-        val className = it.absolutePath
-                .drop(this.absolutePath.length + 1)
-                .dropLast(".class".length)
-                .replace(File.separator, ".")
-        Scene.v().addBasicClass(className, SootClass.SIGNATURES)
-    }
+    private fun File.addClasses() =
+        this.walkTopDown().filter { it.extension == "class" }.forEach {
+            val className =
+                it.absolutePath
+                    .drop(this.absolutePath.length + 1)
+                    .dropLast(".class".length)
+                    .replace(File.separator, ".")
+            Scene.v().addBasicClass(className, SootClass.SIGNATURES)
+        }
 }
 
-private fun Project.getSootClassPath(rtJarPath: String) = (
+private fun Project.getSootClassPath(rtJarPath: String) =
+    (
         listOf(
-                rtJarPath,
-                targetClassDir.absolutePath,
-                testTargetClassDir.absolutePath
-        )
-                + this.codeRepository.projects
-                .flatMap { listOf(it.targetClassDir.absolutePath, it.testTargetClassDir.absolutePath) }
-                + this.classPath
-        ).toSet()
+            rtJarPath,
+            targetClassDir.absolutePath,
+            testTargetClassDir.absolutePath,
+        ) +
+            this.codeRepository.projects
+                .flatMap { listOf(it.targetClassDir.absolutePath, it.testTargetClassDir.absolutePath) } +
+            this.classPath
+    ).toSet()
         .filter { File(it).exists() || it == "VIRTUAL_FS_FOR_JDK" }
         .joinToString(File.pathSeparator)
 
-
-private val disablePacks = listOf(
+private val disablePacks =
+    listOf(
         "jb.dtr",
         "jb.ese",
 //        "jb.ls",
@@ -121,5 +137,5 @@ private val disablePacks = listOf(
         "cg",
         "wjtp",
         "wjop",
-        "wjap"
-)
+        "wjap",
+    )

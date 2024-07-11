@@ -11,13 +11,13 @@ import net.henryhc.mocksniffer.utilities.jarName
 import net.henryhc.mocksniffer.utilities.javaExecutable
 
 class BatchTrainingDataExtractCommand : CliktCommand(name = "batch-extract") {
-
     private val projectInfoList by option("-i")
-            .file().required()
+        .file()
+        .required()
 
     private val j8RtPath by option("-rt")
-            .file(folderOkay = true, fileOkay = false, exists = true)
-            .required()
+        .file(folderOkay = true, fileOkay = false, exists = true)
+        .required()
 
     private val dryRun by option("--dry-run").flag()
 
@@ -41,35 +41,50 @@ class BatchTrainingDataExtractCommand : CliktCommand(name = "batch-extract") {
             println("======================== $projectName ===========================")
             println("$distillCsv -> ${projectName}_tuples.csv -> $output")
 
-            if (dryRun)
+            if (dryRun) {
                 continue
+            }
 
             if (!noTestLogExtraction) {
-                ProcessBuilder(javaExecutable.absolutePath, "-jar", jarName, "test-log-dataset",
-                        "-r", repoDir,
-                        "--obj-csv", distillCsv,
-                        "-o", "./tuple_data/${projectName}_tuples.csv"
-                )
-                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                        .redirectError(ProcessBuilder.Redirect.INHERIT)
-                        .start()
-                        .waitFor()
+                ProcessBuilder(
+                    javaExecutable.absolutePath,
+                    "-jar",
+                    jarName,
+                    "test-log-dataset",
+                    "-r",
+                    repoDir,
+                    "--obj-csv",
+                    distillCsv,
+                    "-o",
+                    "./tuple_data/${projectName}_tuples.csv",
+                ).redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start()
+                    .waitFor()
             }
             if (!noFeature) {
-                ProcessBuilder(javaExecutable.absolutePath, "-jar", jarName, "extract-training-data",
-                        "-rt", j8RtPath.absolutePath,
-                        "-r", repoDir,
-                        "-ds", "./tuple_data/${projectName}_tuples.csv",
-                        "-o", output,
-                        "-pp", parallelProjectsCount.toString(),
-                        "-cgexp", cgExpand.toString()
-                )
-                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                        .redirectError(ProcessBuilder.Redirect.INHERIT)
-                        .start()
-                        .waitFor()
+                ProcessBuilder(
+                    javaExecutable.absolutePath,
+                    "-jar",
+                    jarName,
+                    "extract-training-data",
+                    "-rt",
+                    j8RtPath.absolutePath,
+                    "-r",
+                    repoDir,
+                    "-ds",
+                    "./tuple_data/${projectName}_tuples.csv",
+                    "-o",
+                    output,
+                    "-pp",
+                    parallelProjectsCount.toString(),
+                    "-cgexp",
+                    cgExpand.toString(),
+                ).redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start()
+                    .waitFor()
             }
-
         }
     }
 }

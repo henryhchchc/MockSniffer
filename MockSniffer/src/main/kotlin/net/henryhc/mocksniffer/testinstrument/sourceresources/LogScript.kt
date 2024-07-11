@@ -1,6 +1,7 @@
 package net.henryhc.mocksniffer.testinstrument.sourceresources
 
-val logScript = """
+val logScript =
+    """
 package tool;
 
 import java.io.BufferedWriter;
@@ -132,5 +133,4 @@ public class MockLogger {
         }
     }
 }
-
-""".trimIndent()
+    """.trimIndent()

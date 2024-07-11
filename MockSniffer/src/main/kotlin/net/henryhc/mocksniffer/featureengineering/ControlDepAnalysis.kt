@@ -11,8 +11,10 @@ import soot.toolkits.graph.BriefUnitGraph
 import soot.toolkits.graph.MHGDominatorsFinder
 import soot.toolkits.graph.MHGPostDominatorsFinder
 
-class ControlDepAnalysis(body: Body, depClass: SootClass) {
-
+class ControlDepAnalysis(
+    body: Body,
+    depClass: SootClass,
+) {
     private val trapHandlers = body.traps.map { it.handlerUnit }.toSet()
 
     private val cfg = BriefUnitGraph(body)
@@ -21,12 +23,13 @@ class ControlDepAnalysis(body: Body, depClass: SootClass) {
 
     init {
         val depSuperClasses = depClass.includeSuperClasses()
-        invocations = body.units
+        invocations =
+            body.units
                 .filterIsInstance<Stmt>()
                 .filter {
-                    it.containsInvokeExpr()
-                            && it.invokeExpr is InstanceInvokeExpr
-                            && it.invokeExpr.method.declaringClass in depSuperClasses
+                    it.containsInvokeExpr() &&
+                        it.invokeExpr is InstanceInvokeExpr &&
+                        it.invokeExpr.method.declaringClass in depSuperClasses
                 }.toSet()
     }
 
@@ -39,10 +42,9 @@ class ControlDepAnalysis(body: Body, depClass: SootClass) {
     private val postDominatorsFinder = MHGPostDominatorsFinder(cfg)
 
     private fun getControlDependencies(unit: Unit): Set<Unit> =
-            dominantFinder.getDominators(unit)
-                    .filterIsInstance<IfStmt>()
-                    .filter { !postDominatorsFinder.isDominatedBy(it, unit) || it in trapHandlers }
-                    .toSet()
-
-
+        dominantFinder
+            .getDominators(unit)
+            .filterIsInstance<IfStmt>()
+            .filter { !postDominatorsFinder.isDominatedBy(it, unit) || it in trapHandlers }
+            .toSet()
 }

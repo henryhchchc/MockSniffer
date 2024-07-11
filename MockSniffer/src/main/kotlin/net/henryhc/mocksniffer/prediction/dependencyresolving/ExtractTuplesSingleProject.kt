@@ -12,7 +12,6 @@ import soot.PackManager
 import soot.Transform
 
 class ExtractTuplesSingleProject : SootEnvCommand(name = "extract-dataset-project") {
-
     private val projectDir by option("-p", "--project")
         .file(folderOkay = true, exists = true)
         .required()
@@ -26,9 +25,10 @@ class ExtractTuplesSingleProject : SootEnvCommand(name = "extract-dataset-projec
         val project = repo.projects.single { it.rootDirectory == projectDir.normalize().absoluteFile }
         println("Start analyzing ${project.rootDirectory}")
         configureSoot(project, java8RuntimePath)
-        PackManager.v().getPack("wstp")
+        PackManager
+            .v()
+            .getPack("wstp")
             .add(Transform("wstp.extract_data", DataExtractionTransformer(outputFile, searchDepth)))
         soot.Main.v().run(emptyArray())
     }
-
 }

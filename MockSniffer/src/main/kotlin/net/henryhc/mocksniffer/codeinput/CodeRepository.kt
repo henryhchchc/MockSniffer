@@ -3,8 +3,9 @@ package net.henryhc.mocksniffer.codeinput
 import net.henryhc.mocksniffer.utilities.ConcurrentCachingResolver
 import java.io.File
 
-class CodeRepository(val directory: File) {
-
+class CodeRepository(
+    val directory: File,
+) {
     init {
         require(directory.isDirectory)
     }
@@ -12,7 +13,9 @@ class CodeRepository(val directory: File) {
     val projects by lazy { scanForProjects() }
 
     private fun scanForProjects(): List<Project> =
-        this.directory.walkTopDown().filter { it.isDirectory && it.containsMavenProject() }
+        this.directory
+            .walkTopDown()
+            .filter { it.isDirectory && it.containsMavenProject() }
             .map { MavenProject(this, it.normalize().absoluteFile) }
             .toList()
 
@@ -25,7 +28,8 @@ class CodeRepository(val directory: File) {
             (targetDirectories + testTargetDirectories)
                 .asSequence()
                 .map { File(it, "$fileNameWithPath.class").normalize() }
-                .firstOrNull { it.isFile }?.absolutePath ?: ""
+                .firstOrNull { it.isFile }
+                ?.absolutePath ?: ""
         }
 
     val classTypeResolver =
@@ -33,17 +37,23 @@ class CodeRepository(val directory: File) {
             val fileName = targetTypeResolver[className]
             if (fileName.isNotEmpty()) {
                 val classFile = File(fileName)
-                if (testTargetDirectories.any { classFile.startsWith(it) })
+                if (testTargetDirectories.any { classFile.startsWith(it) }) {
                     ClassType.TEST_SCRIPT
-                else
+                } else {
                     ClassType.PRODUCTION_CODE
-            } else ClassType.UNKNOWN
+                }
+            } else {
+                ClassType.UNKNOWN
+            }
         }
 
     val typeToProjectResolver =
         ConcurrentCachingResolver.of { typeName: String ->
             val sourceFileName = targetTypeResolver[typeName]
-            if (sourceFileName.isEmpty()) Project.EMPTY
-            else projects.first { (it.targetFiles + it.testTargetFiles).any { f -> f.absolutePath == sourceFileName } }
+            if (sourceFileName.isEmpty()) {
+                Project.EMPTY
+            } else {
+                projects.first { (it.targetFiles + it.testTargetFiles).any { f -> f.absolutePath == sourceFileName } }
+            }
         }
 }

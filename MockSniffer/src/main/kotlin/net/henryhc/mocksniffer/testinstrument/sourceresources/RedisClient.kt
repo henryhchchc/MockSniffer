@@ -1,6 +1,7 @@
 package net.henryhc.mocksniffer.testinstrument.sourceresources
 
-val redisClientScript = """
+val redisClientScript =
+    """
     package tool;
 
     import java.io.*;
@@ -390,4 +391,4 @@ val redisClientScript = """
     		callback.accept(new Redis(s));
     	}
     }
-""".trimIndent()
+    """.trimIndent()

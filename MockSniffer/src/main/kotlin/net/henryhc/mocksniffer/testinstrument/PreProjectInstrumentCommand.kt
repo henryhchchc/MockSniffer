@@ -8,7 +8,6 @@ import com.github.ajalt.clikt.parameters.types.file
 import net.henryhc.mocksniffer.codeinput.CodeRepository
 
 class PreProjectInstrumentCommand : CliktCommand(name = commandName) {
-
     companion object {
         const val commandName = "soot-instrument-test"
     }

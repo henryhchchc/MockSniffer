@@ -12,10 +12,9 @@ import net.henryhc.mocksniffer.testinstrument.sourceresources.redisClientScript
 import java.io.File
 
 class AddLoggerScriptCommand : CliktCommand(name = "test-instrument-add-logger-script") {
-
     private val sourceRepo by option("--source-repo", "-r")
-            .file(folderOkay = true, fileOkay = false, exists = true)
-            .required()
+        .file(folderOkay = true, fileOkay = false, exists = true)
+        .required()
 
     private val redisServer by option("--redis-server").default("127.0.0.1")
 
@@ -25,16 +24,14 @@ class AddLoggerScriptCommand : CliktCommand(name = "test-instrument-add-logger-s
 
     private fun prepareSource(repo: CodeRepository) {
         for (project in repo.projects) {
-
             val loggerFile = File(File(project.sourceDirectory, "tool"), "MockLogger.java")
             loggerFile.parentFile.mkdir()
             loggerFile.writeText(
-                    logScript
-                            .replace("<redis_host>", redisServer)
-                            .replace("<redis_port>", redisPort.toString())
+                logScript
+                    .replace("<redis_host>", redisServer)
+                    .replace("<redis_port>", redisPort.toString()),
             )
             File(loggerFile.parentFile, "Redis.java").writeText(redisClientScript)
         }
     }
-
 }

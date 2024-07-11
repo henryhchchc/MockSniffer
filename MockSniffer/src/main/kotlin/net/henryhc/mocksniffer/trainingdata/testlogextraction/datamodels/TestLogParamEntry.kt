@@ -4,50 +4,54 @@ import org.apache.commons.csv.CSVPrinter
 import org.apache.commons.csv.CSVRecord
 
 data class TestLogParamEntry(
-        val testClassName: String,
-        val testMethodName: String,
-        val typeName: String,
-        val objType: String,
-        val paramIdx: Int,
-        val methodSignature: String,
-        var classType: String = ""
+    val testClassName: String,
+    val testMethodName: String,
+    val typeName: String,
+    val objType: String,
+    val paramIdx: Int,
+    val methodSignature: String,
+    var classType: String = "",
 )
 
-fun MethodParamItem.toDistillEntry() = TestLogParamEntry(
+fun MethodParamItem.toDistillEntry() =
+    TestLogParamEntry(
         this.testFrame!!.className,
         this.testFrame.methodName,
         this.typeName,
         this.objType,
         this.paramIdx,
-        this.methodSignature
-)
+        this.methodSignature,
+    )
 
-val invocationDistillEntryHeaders = arrayOf(
+val invocationDistillEntryHeaders =
+    arrayOf(
         "test_class_name",
         "test_method_name",
         "type_name",
         "obj_type",
         "param_idx",
         "method_signature",
-        "class_type"
-)
+        "class_type",
+    )
 
-fun CSVRecord.toInvOrObjDistillEntry() = TestLogParamEntry(
+fun CSVRecord.toInvOrObjDistillEntry() =
+    TestLogParamEntry(
         this["test_class_name"],
         this["test_method_name"],
         this["type_name"],
         this["obj_type"],
         this["param_idx"].toInt(),
         this["method_signature"],
-        this["class_type"]
-)
+        this["class_type"],
+    )
 
-fun TestLogParamEntry.printCsvRecord(printer: CSVPrinter) = printer.printRecord(
+fun TestLogParamEntry.printCsvRecord(printer: CSVPrinter) =
+    printer.printRecord(
         this.testClassName,
         this.testMethodName,
         this.typeName,
         this.objType,
         this.paramIdx,
         this.methodSignature,
-        this.classType
-)
+        this.classType,
+    )

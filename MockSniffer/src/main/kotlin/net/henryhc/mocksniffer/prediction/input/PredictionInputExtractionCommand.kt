@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors
 
 class PredictionInputExtractionCommand : CliktCommand(name = "extract-prediction-input") {
-
     private val repoDir by option("-r", "--repo")
         .file(exists = true, folderOkay = true, fileOkay = false)
         .required()
@@ -39,54 +38,69 @@ class PredictionInputExtractionCommand : CliktCommand(name = "extract-prediction
     override fun run() {
         val sourceRepo = CodeRepository(repoDir.normalize().absoluteFile)
         println("Loading dataset")
-        val datasetEntries = CSVFormat.DEFAULT
-            .withFirstRecordAsHeader()
-            .parse(datasetFile.bufferedReader())
-            .map { DepEntry(it["CUT"], it["DEP"], it["ORD"].toInt()) }
-            .groupBy { sourceRepo.typeToProjectResolver[it.cut] }
+        val datasetEntries =
+            CSVFormat.DEFAULT
+                .withFirstRecordAsHeader()
+                .parse(datasetFile.bufferedReader())
+                .map { DepEntry(it["CUT"], it["DEP"], it["ORD"].toInt()) }
+                .groupBy { sourceRepo.typeToProjectResolver[it.cut] }
         val projectsProcessed = AtomicInteger(0)
         val tempDir = Files.createTempDirectory("").toFile()
         val semaphore = java.util.concurrent.Semaphore(parallelProjectsCount)
         println("Splitting dataset by projects")
-        val partialFiles = sourceRepo.projects.parallelStream().filter { it in datasetEntries }.map { project ->
-            val inputFile = File(tempDir, "${project.hashCode()}.csv")
-            val outputFile = File(tempDir, "${project.hashCode()}_out.csv")
-            inputFile.bufferedWriter().let { CSVFormat.DEFAULT.withHeader("CUT", "DEP", "ORD").print(it) }
-                .use { p ->
-                    datasetEntries.getValue(project).forEach { p.printRecord(it.cut, it.dep, it.order) }
-                }
-            semaphore.acquire()
-            ProcessBuilder(
-                javaExecutable.absolutePath, "-jar", jarName,
-                "extract-prediction-input-pre-project",
-                "-p", project.rootDirectory.absolutePath,
-                "-rt", rtPath.absolutePath,
-                "-i", inputFile.absolutePath,
-                "-o", outputFile.absolutePath,
-                "-cgexp", cgExpand.toString()
-            )
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
-                .start()
-                .waitFor()
-            semaphore.release()
-            println("${projectsProcessed.incrementAndGet()} projects processed")
-            return@map outputFile
-        }.collect(Collectors.toList())
+        val partialFiles =
+            sourceRepo.projects
+                .parallelStream()
+                .filter { it in datasetEntries }
+                .map { project ->
+                    val inputFile = File(tempDir, "${project.hashCode()}.csv")
+                    val outputFile = File(tempDir, "${project.hashCode()}_out.csv")
+                    inputFile
+                        .bufferedWriter()
+                        .let { CSVFormat.DEFAULT.withHeader("CUT", "DEP", "ORD").print(it) }
+                        .use { p ->
+                            datasetEntries.getValue(project).forEach { p.printRecord(it.cut, it.dep, it.order) }
+                        }
+                    semaphore.acquire()
+                    ProcessBuilder(
+                        javaExecutable.absolutePath,
+                        "-jar",
+                        jarName,
+                        "extract-prediction-input-pre-project",
+                        "-p",
+                        project.rootDirectory.absolutePath,
+                        "-rt",
+                        rtPath.absolutePath,
+                        "-i",
+                        inputFile.absolutePath,
+                        "-o",
+                        outputFile.absolutePath,
+                        "-cgexp",
+                        cgExpand.toString(),
+                    ).redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                        .redirectError(ProcessBuilder.Redirect.INHERIT)
+                        .start()
+                        .waitFor()
+                    semaphore.release()
+                    println("${projectsProcessed.incrementAndGet()} projects processed")
+                    return@map outputFile
+                }.collect(Collectors.toList())
         println("Merging CSVs from projects")
         outputCsv.delete()
         outputCsv.bufferedWriter().use { outputWriter ->
             val printer = CSVFormat.DEFAULT.withHeader(*predictionInputEntryHeaders).print(outputWriter)
-            partialFiles.filter { it.exists() }.flatMap {
-                it.bufferedReader().use { reader ->
-                    CSVFormat.DEFAULT.withHeader(*predictionInputEntryHeaders)
-                        .parse(reader)
-                        .drop(1)
-                        .map { it.parsePredictionInputEntry() }
-                }
-            }.forEach { it.printCsvRecord(printer) }
+            partialFiles
+                .filter { it.exists() }
+                .flatMap {
+                    it.bufferedReader().use { reader ->
+                        CSVFormat.DEFAULT
+                            .withHeader(*predictionInputEntryHeaders)
+                            .parse(reader)
+                            .drop(1)
+                            .map { it.parsePredictionInputEntry() }
+                    }
+                }.forEach { it.printCsvRecord(printer) }
         }
         tempDir.deleteRecursively()
     }
 }
-

@@ -12,22 +12,32 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class DataExtractionTransformer(
     private val outputFile: File,
-    private val searchDepth: Int
+    private val searchDepth: Int,
 ) : SceneTransformer() {
-
     private val firstOrderDeps = ConcurrentHashMap<SootClass, Set<SootClass>>()
 
-    override fun internalTransform(phaseName: String, options: Map<String, String>) {
+    override fun internalTransform(
+        phaseName: String,
+        options: Map<String, String>,
+    ) {
         Scene.v().applicationClasses.parallelStream().forEach { appClass ->
             firstOrderDeps[appClass] = appClass.getDependencies()
         }
-        data class QueueEntry(val rootClass: SootClass, val dep: SootClass, val order: Int)
+
+        data class QueueEntry(
+            val rootClass: SootClass,
+            val dep: SootClass,
+            val order: Int,
+        )
 
         val processingQueue = ConcurrentLinkedQueue<QueueEntry>()
         firstOrderDeps.keys.map { QueueEntry(it, it, 1) }.also { processingQueue.addAll(it) }
-        val resultSet = Sets.newConcurrentHashSet(firstOrderDeps.flatMap { (k, v) ->
-            v.map { DepEntry(k.name, it.name, 1) }
-        })
+        val resultSet =
+            Sets.newConcurrentHashSet(
+                firstOrderDeps.flatMap { (k, v) ->
+                    v.map { DepEntry(k.name, it.name, 1) }
+                },
+            )
         while (processingQueue.isNotEmpty()) {
             val current = processingQueue.poll() ?: continue
             resultSet.add(DepEntry(current.rootClass.name, current.dep.name, current.order))
@@ -43,13 +53,13 @@ class DataExtractionTransformer(
             .use { p ->
                 resultSet.forEach { p.printRecord(it.cut, it.dep, it.order) }
             }
-
     }
 
-    private fun SootClass.getDependencies() = this.methods
-        .flatMap { it.parameterTypes }
-        .filterIsInstance<RefType>()
-        .map { it.sootClass }
-        .filter { it.shouldIncludeInDependencies() }
-        .toSet()
+    private fun SootClass.getDependencies() =
+        this.methods
+            .flatMap { it.parameterTypes }
+            .filterIsInstance<RefType>()
+            .map { it.sootClass }
+            .filter { it.shouldIncludeInDependencies() }
+            .toSet()
 }

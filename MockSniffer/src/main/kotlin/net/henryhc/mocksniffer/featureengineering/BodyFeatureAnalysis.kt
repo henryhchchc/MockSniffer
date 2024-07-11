@@ -11,18 +11,25 @@ import soot.toolkits.scalar.ForwardFlowAnalysis
 import java.util.*
 
 class BodyFeatureAnalysis(
-        graph: UnitGraph,
-        dependency: SootClass,
-        private val currentClass: SootClass
+    graph: UnitGraph,
+    dependency: SootClass,
+    private val currentClass: SootClass,
 ) : ForwardFlowAnalysis<Unit, MutableSet<Unit>>(graph) {
-
     override fun newInitialFlow() = mutableSetOf<Unit>()
-    override fun merge(leftFlow: MutableSet<Unit>, rightFlow: MutableSet<Unit>, outFlow: MutableSet<Unit>) {
+
+    override fun merge(
+        leftFlow: MutableSet<Unit>,
+        rightFlow: MutableSet<Unit>,
+        outFlow: MutableSet<Unit>,
+    ) {
         outFlow.addAll(leftFlow)
         outFlow.addAll(rightFlow)
     }
 
-    override fun copy(src: MutableSet<Unit>, tgt: MutableSet<Unit>) {
+    override fun copy(
+        src: MutableSet<Unit>,
+        tgt: MutableSet<Unit>,
+    ) {
         tgt.addAll(src)
     }
 
@@ -42,7 +49,11 @@ class BodyFeatureAnalysis(
 
     private val returnStmts = mutableSetOf<ReturnStmt>()
 
-    override fun flowThrough(inFlow: MutableSet<Unit>, node: Unit, outFlow: MutableSet<Unit>) {
+    override fun flowThrough(
+        inFlow: MutableSet<Unit>,
+        node: Unit,
+        outFlow: MutableSet<Unit>,
+    ) {
         outFlow.add(node)
         val stmt = node as Stmt
         if (stmt is DefinitionStmt) {
@@ -52,23 +63,36 @@ class BodyFeatureAnalysis(
         }
         if (stmt.containsInvokeExpr()) {
             invocations.add(stmt)
-            if (stmt.invokeExpr.method.isDeclared
-                    && stmt.invokeExpr.method.declaringClass in depClasses) {
+            if (stmt.invokeExpr.method.isDeclared &&
+                stmt.invokeExpr.method.declaringClass in depClasses
+            ) {
                 depInvocations.add(stmt)
-                exceptionCatches.addAll(graph.getSuccsOf(stmt).filterIsInstance<IdentityStmt>()
+                exceptionCatches.addAll(
+                    graph
+                        .getSuccsOf(stmt)
+                        .filterIsInstance<IdentityStmt>()
                         .filter { it.rightOp is CaughtExceptionRef }
-                        .map { Pair(stmt, it) })
+                        .map { Pair(stmt, it) },
+                )
             }
         }
-        if (stmt is IfStmt)
+        if (stmt is IfStmt) {
             branches.add(stmt)
-        if (stmt is ThrowStmt)
+        }
+        if (stmt is ThrowStmt) {
             throwStmts.add(stmt)
-        if (stmt is ReturnStmt)
+        }
+        if (stmt is ReturnStmt) {
             returnStmts.add(stmt)
+        }
     }
 
-    val caughtInvokeStmts by lazy { this.exceptionCatches.toSet().map { it.first }.count() }
+    val caughtInvokeStmts by lazy {
+        this.exceptionCatches
+            .toSet()
+            .map { it.first }
+            .count()
+    }
 
     private val invDependencies by lazy {
         depInvocations.map { it.invokeExpr }.map { it.args.flatMap { it.resolveDependencies().toSet() } }
@@ -83,14 +107,24 @@ class BodyFeatureAnalysis(
     val invocationsDependsOnRet by lazy { invDependencies.count { it.any { it is InvokeExpr } } }
 
     val returnValueUsedByBranches by lazy {
-        val deps = branches.flatMap { it.condition.useBoxes.map { it.value }.getDependencies() }
-                .toSet()
+        val deps =
+            branches
+                .flatMap {
+                    it.condition.useBoxes
+                        .map { it.value }
+                        .getDependencies()
+                }.toSet()
         depInvocations.filterIsInstance<DefinitionStmt>().map { it.leftOp }.count { it in deps }
     }
 
     val returnValueUsedForReturn by lazy {
-        val deps = returnStmts.flatMap { it.op.useBoxes.map { it.value }.getDependencies() }
-                .toSet()
+        val deps =
+            returnStmts
+                .flatMap {
+                    it.op.useBoxes
+                        .map { it.value }
+                        .getDependencies()
+                }.toSet()
         depInvocations.filterIsInstance<DefinitionStmt>().map { it.leftOp }.count { it in deps }
     }
 
@@ -104,13 +138,11 @@ class BodyFeatureAnalysis(
         depInvocations.filterIsInstance<DefinitionStmt>().map { it.leftOp }.count { it in deps }
     }
 
-
     private fun List<Value>.getDependencies() = this.flatMap { it.resolveDependencies().toSet() }
 
     init {
         doAnalysis()
     }
-
 
     private fun Value.resolveDependencies(): Set<Value> {
         val result = mutableSetOf<Value>()
@@ -120,14 +152,12 @@ class BodyFeatureAnalysis(
             val visit = queue.pop()
             if (visit !in visited) {
                 result.add(visit)
-                if (visit in varGraph)
+                if (visit in varGraph) {
                     queue.addAll(varGraph.getValue(visit).filter { it !in visited })
+                }
             }
             visited.add(visit)
         }
         return result
     }
-
 }
-
-

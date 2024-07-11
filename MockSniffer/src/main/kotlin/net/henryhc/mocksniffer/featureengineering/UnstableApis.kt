@@ -1,6 +1,7 @@
 package net.henryhc.mocksniffer.featureengineering
 
-val unstableInterfaces = setOf(
+val unstableInterfaces =
+    setOf(
         "java.lang.AutoClosable",
         "java.io.Closable",
         "java.sql.",
@@ -8,10 +9,11 @@ val unstableInterfaces = setOf(
         "java.io.Flushable",
         "java.net.",
         "javax.naming.",
-        "javax.security."
-)
+        "javax.security.",
+    )
 
-val unstableAPIs = setOf(
+val unstableAPIs =
+    setOf(
         // IO
         "java.io.IOException",
         "java.io.File",
@@ -20,7 +22,6 @@ val unstableAPIs = setOf(
         "java.io.FileOutputStream",
         "java.nio.",
         "javax.persistence.",
-
         // Threading
         "java.util.concurrent.",
         "java.lang.InterruptedException",
@@ -28,36 +29,29 @@ val unstableAPIs = setOf(
         "java.lang.Runnable",
         "java.util.Timer",
         "java.lang.Process",
-
         // Network
         "java.net.",
         "javax.net.",
         "javax.servlet.",
         "javax.mail.",
-
         // Database
         "java.sql.",
-
         // Crypto
         "java.security.",
         "javax.security.",
         "javax.crypto.",
         "javax.naming.",
         "java.lang.SecurityManager",
-
         // Time
         "java.time.Clock",
         "java.time.Clock\$SystemClock",
         "java.time.Clock\$TickClock",
         "java.time.Clock\$FixedClock",
         "java.time.Clock\$OffsetClock",
-
         // RPC
         "javax.jms.",
         "javax.ws.",
-
         // Others
         "java.util.Properties",
-        "javax.resource.spi."
-
-)
+        "javax.resource.spi.",
+    )

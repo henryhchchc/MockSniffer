@@ -1,12 +1,11 @@
 package net.henryhc.mocksniffer.trainingdata.testlogextraction.datamodels
 
-
 data class StackFrame(
-        val fileName: String,
-        val lineNumber: Int,
-        val className: String,
-        val methodName: String,
-        var classType: String = ""
+    val fileName: String,
+    val lineNumber: Int,
+    val className: String,
+    val methodName: String,
+    var classType: String = "",
 ) {
     override fun toString() = "$fileName,$lineNumber,$className,$methodName,$classType"
 

@@ -12,7 +12,7 @@ abstract class SootEnvCommand(
     invokeWithoutSubcommand: Boolean = false,
     printHelpOnEmptyArgs: Boolean = false,
     helpTags: Map<String, String> = emptyMap(),
-    autoCompleteEnvvar: String? = ""
+    autoCompleteEnvvar: String? = "",
 ) : CliktCommand(help, epilog, name, invokeWithoutSubcommand, printHelpOnEmptyArgs, helpTags, autoCompleteEnvvar) {
     protected val java8RuntimePath by option("-rt", "--java-8-runtime")
         .file(folderOkay = true, exists = true)
